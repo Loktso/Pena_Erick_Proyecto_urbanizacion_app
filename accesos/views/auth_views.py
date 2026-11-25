@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -17,6 +18,10 @@ def registrarse(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             usuario = form.save()
+            # Todo usuario nuevo entra al grupo "consultores" (si el grupo ya existe)
+            grupo = Group.objects.filter(name='consultores').first()
+            if grupo:
+                usuario.groups.add(grupo)
             login(request, usuario)  # inicia sesión automáticamente
             messages.success(request, f'Cuenta creada. Bienvenido, {usuario.username}.')
             return redirect(settings.LOGIN_REDIRECT_URL)

@@ -1,25 +1,31 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accesos.forms import RegistroAccesoForm
 from accesos.models import RegistroAcceso
+from accesos.permisos import puede_modificar
 
 
+@login_required
+@permission_required('accesos.view_registroacceso', raise_exception=True)
 def registro_list(request):
-    # select_related trae las tablas relacionadas en una sola consulta
     registros = RegistroAcceso.objects.select_related(
         'visitante', 'vivienda', 'autorizado_por', 'creado_por'
     )
     return render(request, 'accesos/registros/lista.html', {'registros': registros})
 
 
+@login_required
+@permission_required('accesos.view_registroacceso', raise_exception=True)
 def registro_detail(request, pk):
     registro = get_object_or_404(RegistroAcceso, pk=pk)
     return render(request, 'accesos/registros/detalle.html', {'registro': registro})
 
 
 @login_required
+@permission_required('accesos.add_registroacceso', raise_exception=True)
 def registro_create(request):
     if request.method == 'POST':
         form = RegistroAccesoForm(request.POST)
@@ -38,8 +44,12 @@ def registro_create(request):
 
 
 @login_required
+@permission_required('accesos.change_registroacceso', raise_exception=True)
 def registro_update(request, pk):
     registro = get_object_or_404(RegistroAcceso, pk=pk)
+    # Regla de propiedad: solo el administrador o quien lo creó puede editarlo
+    if not puede_modificar(request.user, registro):
+        raise PermissionDenied
     if request.method == 'POST':
         form = RegistroAccesoForm(request.POST, instance=registro)
         if form.is_valid():
@@ -55,8 +65,11 @@ def registro_update(request, pk):
 
 
 @login_required
+@permission_required('accesos.delete_registroacceso', raise_exception=True)
 def registro_delete(request, pk):
     registro = get_object_or_404(RegistroAcceso, pk=pk)
+    if not puede_modificar(request.user, registro):
+        raise PermissionDenied
     if request.method == 'POST':
         registro.delete()
         messages.success(request, 'Registro de acceso eliminado exitosamente.')
