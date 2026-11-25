@@ -16,6 +16,7 @@
         <ul>
             {% for acceso in visitante.accesos.all %}
                 <li>
+                    <a href="{{ acceso.get_absolute_url }}">Registro #{{ acceso.pk }}</a> -
                     {{ acceso.vivienda }} - {{ acceso.get_motivo_display }} -
                     {{ acceso.get_estado_display }} -
                     {{ acceso.fecha_ingreso|date:"d/m/Y H:i" }}

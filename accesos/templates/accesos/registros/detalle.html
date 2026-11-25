@@ -1,0 +1,34 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Registro de acceso #{{ registro.pk }}{% endblock %}
+
+{% block contenido %}
+    <h2>Registro de acceso #{{ registro.pk }}</h2>
+
+    <ul>
+        <li>
+            <strong>Visitante:</strong>
+            <a href="{% url 'visitante_detail' registro.visitante.pk %}">{{ registro.visitante }}</a>
+        </li>
+        <li><strong>Vivienda:</strong> {{ registro.vivienda }}</li>
+        <li>
+            <strong>Autorizado por:</strong>
+            {% if registro.autorizado_por %}
+                {{ registro.autorizado_por }}
+            {% else %}
+                Sin autorizador registrado
+            {% endif %}
+        </li>
+        <li><strong>Motivo:</strong> {{ registro.get_motivo_display }}</li>
+        <li><strong>Estado:</strong> {{ registro.get_estado_display }}</li>
+        <li><strong>Ingreso:</strong> {{ registro.fecha_ingreso|date:"d/m/Y H:i" }}</li>
+        <li><strong>Salida:</strong> {{ registro.fecha_salida|date:"d/m/Y H:i"|default:"Aún no registrada" }}</li>
+        <li><strong>Registrado por:</strong> {{ registro.creado_por.username }}</li>
+    </ul>
+
+    <p>
+        <a href="{% url 'registro_update' registro.pk %}">Editar</a>
+        <a href="{% url 'registro_delete' registro.pk %}">Eliminar</a>
+        <a href="{% url 'registro_list' %}">Volver al listado</a>
+    </p>
+{% endblock %}

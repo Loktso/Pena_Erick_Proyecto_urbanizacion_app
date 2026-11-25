@@ -1,0 +1,15 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Eliminar registro de acceso{% endblock %}
+
+{% block contenido %}
+    <h2>Eliminar registro de acceso</h2>
+    <p>¿Seguro que desea eliminar el registro de <strong>{{ registro.visitante }}</strong>
+       en <strong>{{ registro.vivienda }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Sí, eliminar</button>
+        <a href="{% url 'registro_detail' registro.pk %}">Cancelar</a>
+    </form>
+{% endblock %}

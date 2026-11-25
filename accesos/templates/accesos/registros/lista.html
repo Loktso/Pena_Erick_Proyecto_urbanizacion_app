@@ -1,0 +1,45 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Registros de acceso{% endblock %}
+
+{% block contenido %}
+    <h2>Registros de acceso</h2>
+    <p><a href="{% url 'registro_create' %}">Nuevo registro de acceso</a></p>
+
+    {% if registros %}
+        <table border="1" cellpadding="6">
+            <thead>
+                <tr>
+                    <th>Visitante</th>
+                    <th>Vivienda</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Ingreso</th>
+                    <th>Salida</th>
+                    <th>Registrado por</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.visitante }}</td>
+                        <td>{{ registro.vivienda }}</td>
+                        <td>{{ registro.get_motivo_display }}</td>
+                        <td>{{ registro.get_estado_display }}</td>
+                        <td>{{ registro.fecha_ingreso|date:"d/m/Y H:i" }}</td>
+                        <td>{{ registro.fecha_salida|date:"d/m/Y H:i"|default:"-" }}</td>
+                        <td>{{ registro.creado_por.username }}</td>
+                        <td>
+                            <a href="{{ registro.get_absolute_url }}">Ver</a>
+                            <a href="{% url 'registro_update' registro.pk %}">Editar</a>
+                            <a href="{% url 'registro_delete' registro.pk %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay registros de acceso.</p>
+    {% endif %}
+{% endblock %}
