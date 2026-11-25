@@ -5,3 +5,10 @@ from accesos.views.visitante_views import (
     visitante_update,
     visitante_delete,
 )
+from accesos.views.registro_acceso_views import (
+    registro_list,
+    registro_detail,
+    registro_create,
+    registro_update,
+    registro_delete,
+)
