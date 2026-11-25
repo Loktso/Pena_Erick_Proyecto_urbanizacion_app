@@ -1,0 +1,41 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}{{ residente }}{% endblock %}
+
+{% block contenido %}
+    <h2>{{ residente }}</h2>
+
+    <ul>
+        <li><strong>Cédula:</strong> {{ residente.cedula }}</li>
+        <li><strong>Teléfono:</strong> {{ residente.telefono|default:"-" }}</li>
+        <li><strong>Correo:</strong> {{ residente.email|default:"-" }}</li>
+    </ul>
+
+    <h3>Viviendas</h3>
+    {% if residente.viviendas.all %}
+        <ul>
+            {% for vivienda in residente.viviendas.all %}
+                <li><a href="{{ vivienda.get_absolute_url }}">{{ vivienda }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Este residente no tiene viviendas asignadas.</p>
+    {% endif %}
+
+    <h3>Accesos que ha autorizado</h3>
+    {% if residente.accesos_autorizados.all %}
+        <ul>
+            {% for acceso in residente.accesos_autorizados.all %}
+                <li>
+                    <a href="{{ acceso.get_absolute_url }}">Registro #{{ acceso.pk }}</a> -
+                    {{ acceso.visitante }} - {{ acceso.get_estado_display }} -
+                    {{ acceso.fecha_ingreso|date:"d/m/Y H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Este residente no ha autorizado accesos.</p>
+    {% endif %}
+
+    <p><a href="{% url 'residente_list' %}">Volver al listado</a></p>
+{% endblock %}

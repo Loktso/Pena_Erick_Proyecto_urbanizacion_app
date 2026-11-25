@@ -1,0 +1,42 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}{{ vivienda }}{% endblock %}
+
+{% block contenido %}
+    <h2>{{ vivienda }}</h2>
+
+    <ul>
+        <li><strong>Manzana:</strong> {{ vivienda.manzana }}</li>
+        <li><strong>Número:</strong> {{ vivienda.numero }}</li>
+        <li><strong>Tipo:</strong> {{ vivienda.get_tipo_display }}</li>
+        <li><strong>Registrada el:</strong> {{ vivienda.fecha_registro|date:"d/m/Y" }}</li>
+    </ul>
+
+    <h3>Residentes</h3>
+    {% if vivienda.residentes.all %}
+        <ul>
+            {% for residente in vivienda.residentes.all %}
+                <li><a href="{{ residente.get_absolute_url }}">{{ residente }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Esta vivienda no tiene residentes registrados.</p>
+    {% endif %}
+
+    <h3>Accesos a esta vivienda</h3>
+    {% if vivienda.accesos.all %}
+        <ul>
+            {% for acceso in vivienda.accesos.all %}
+                <li>
+                    <a href="{{ acceso.get_absolute_url }}">Registro #{{ acceso.pk }}</a> -
+                    {{ acceso.visitante }} - {{ acceso.get_estado_display }} -
+                    {{ acceso.fecha_ingreso|date:"d/m/Y H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Esta vivienda no tiene accesos registrados.</p>
+    {% endif %}
+
+    <p><a href="{% url 'vivienda_list' %}">Volver al listado</a></p>
+{% endblock %}

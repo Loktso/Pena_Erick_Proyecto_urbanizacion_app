@@ -1,0 +1,34 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Viviendas{% endblock %}
+
+{% block contenido %}
+    <h2>Viviendas</h2>
+
+    {% if viviendas %}
+        <table border="1" cellpadding="6">
+            <thead>
+                <tr>
+                    <th>Manzana</th>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Fecha de registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vivienda in viviendas %}
+                    <tr>
+                        <td>{{ vivienda.manzana }}</td>
+                        <td>{{ vivienda.numero }}</td>
+                        <td>{{ vivienda.get_tipo_display }}</td>
+                        <td>{{ vivienda.fecha_registro|date:"d/m/Y" }}</td>
+                        <td><a href="{{ vivienda.get_absolute_url }}">Ver</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay viviendas registradas.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Residentes{% endblock %}
+
+{% block contenido %}
+    <h2>Residentes</h2>
+
+    {% if residentes %}
+        <table border="1" cellpadding="6">
+            <thead>
+                <tr>
+                    <th>Apellidos</th>
+                    <th>Nombres</th>
+                    <th>Cédula</th>
+                    <th>Teléfono</th>
+                    <th>Viviendas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for residente in residentes %}
+                    <tr>
+                        <td>{{ residente.apellidos }}</td>
+                        <td>{{ residente.nombres }}</td>
+                        <td>{{ residente.cedula }}</td>
+                        <td>{{ residente.telefono|default:"-" }}</td>
+                        <td>
+                            {% for vivienda in residente.viviendas.all %}
+                                {{ vivienda }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                -
+                            {% endfor %}
+                        </td>
+                        <td><a href="{{ residente.get_absolute_url }}">Ver</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay residentes registrados.</p>
+    {% endif %}
+{% endblock %}

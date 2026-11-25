@@ -10,11 +10,14 @@
             <strong>Visitante:</strong>
             <a href="{% url 'visitante_detail' registro.visitante.pk %}">{{ registro.visitante }}</a>
         </li>
-        <li><strong>Vivienda:</strong> {{ registro.vivienda }}</li>
+        <li>
+            <strong>Vivienda:</strong>
+            <a href="{{ registro.vivienda.get_absolute_url }}">{{ registro.vivienda }}</a>
+        </li>
         <li>
             <strong>Autorizado por:</strong>
             {% if registro.autorizado_por %}
-                {{ registro.autorizado_por }}
+                <a href="{{ registro.autorizado_por.get_absolute_url }}">{{ registro.autorizado_por }}</a>
             {% else %}
                 Sin autorizador registrado
             {% endif %}
