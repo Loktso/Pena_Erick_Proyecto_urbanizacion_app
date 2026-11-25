@@ -11,6 +11,19 @@
             <a href="{% url 'registro_list' %}">Registros de acceso</a> |
             <a href="{% url 'visitante_list' %}">Visitantes</a>
         </nav>
+
+        <div>
+            {% if user.is_authenticated %}
+                Usuario: <strong>{{ user.username }}</strong>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Salir</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Entrar</a> |
+                <a href="{% url 'registrarse' %}">Registrarse</a>
+            {% endif %}
+        </div>
         <hr>
     </header>
 
