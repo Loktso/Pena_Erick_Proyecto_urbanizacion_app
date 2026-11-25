@@ -117,6 +117,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Autenticación
+LOGIN_URL = 'login'              # a dónde manda @login_required a un anónimo
+LOGIN_REDIRECT_URL = 'inicio'    # a dónde va después de iniciar sesión
+LOGOUT_REDIRECT_URL = 'login'    # a dónde va después de cerrar sesión
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

@@ -1,2 +1,3 @@
 from accesos.forms.visitante_form import VisitanteForm
 from accesos.forms.registro_acceso_form import RegistroAccesoForm
+from accesos.forms.registro_form import RegistroForm

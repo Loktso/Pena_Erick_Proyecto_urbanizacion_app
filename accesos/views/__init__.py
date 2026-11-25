@@ -12,3 +12,4 @@ from accesos.views.registro_acceso_views import (
     registro_update,
     registro_delete,
 )
+from accesos.views.auth_views import registrarse, iniciar_sesion, cerrar_sesion
