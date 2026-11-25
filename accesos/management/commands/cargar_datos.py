@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -8,19 +9,37 @@ from accesos.models import Vivienda, Residente, Visitante, RegistroAcceso
 
 
 class Command(BaseCommand):
-    help = 'Carga datos de prueba (se puede ejecutar varias veces sin duplicar)'
+    help = 'Crea grupos, usuarios y datos de prueba (se puede ejecutar varias veces sin duplicar)'
 
-    def handle(self, *args, **options):
-        # Usuario base: lo necesitan los campos creado_por
-        admin, creado = User.objects.get_or_create(
-            username='admin',
-            defaults={'email': 'admin@urbanizacion.ec', 'is_staff': True, 'is_superuser': True},
+    def crear_usuario(self, username, password, email, grupo=None, superusuario=False):
+        usuario, creado = User.objects.get_or_create(
+            username=username,
+            defaults={'email': email, 'is_staff': superusuario, 'is_superuser': superusuario},
         )
         if creado:
-            admin.set_password('Admin12345')
-            admin.save()
+            usuario.set_password(password)
+            usuario.save()
+        if grupo:
+            usuario.groups.add(Group.objects.get(name=grupo))
+        return usuario
 
-        # 6 viviendas
+    def handle(self, *args, **options):
+        # 1. Grupos y permisos
+        call_command('crear_grupos')
+
+        # 2. Usuarios de prueba: un superusuario y usuarios de cada grupo
+        admin = self.crear_usuario('admin', 'Admin12345', 'admin@urbanizacion.ec', superusuario=True)
+        self.crear_usuario(
+            'administrador1', 'Admin2026!', 'administrador1@urbanizacion.ec', grupo='administradores'
+        )
+        consultor1 = self.crear_usuario(
+            'consultor1', 'Consul2026!', 'consultor1@urbanizacion.ec', grupo='consultores'
+        )
+        self.crear_usuario(
+            'consultor2', 'Consul2026!', 'consultor2@urbanizacion.ec', grupo='consultores'
+        )
+
+        # 3. Viviendas (6)
         datos_viviendas = [
             ('A', '1', 'CASA'), ('A', '2', 'CASA'), ('B', '1', 'CASA'),
             ('B', '2', 'DEPTO'), ('C', '1', 'DEPTO'), ('C', '2', 'CASA'),
@@ -32,7 +51,7 @@ class Command(BaseCommand):
             )
             viviendas.append(vivienda)
 
-        # 6 residentes
+        # 4. Residentes (6)
         datos_residentes = [
             ('Carlos', 'Mena', '1700000001'), ('Lucia', 'Paredes', '1700000002'),
             ('Jorge', 'Salazar', '1700000003'), ('Ana', 'Torres', '1700000004'),
@@ -55,7 +74,7 @@ class Command(BaseCommand):
                     residente.viviendas.add(viviendas[1])  # un residente con dos viviendas
             residentes.append(residente)
 
-        # 6 visitantes
+        # 5. Visitantes (6)
         datos_visitantes = [
             ('Diego', 'Cevallos', '1800000001', 'PBA1234'),
             ('Sofia', 'Andrade', '1800000002', ''),
@@ -72,7 +91,8 @@ class Command(BaseCommand):
             )
             visitantes.append(visitante)
 
-        # 6 registros de acceso (solo si la tabla está vacía)
+        # 6. Registros de acceso (6, solo si la tabla está vacía)
+        #    Los pares los crea admin y los impares consultor1, para probar la regla de propiedad
         if not RegistroAcceso.objects.exists():
             motivos = ['VISITA', 'DELIVERY', 'SERVICIO', 'VISITA', 'OTRO', 'VISITA']
             estados = ['FINALIZADO', 'AUTORIZADO', 'PENDIENTE', 'RECHAZADO', 'FINALIZADO', 'AUTORIZADO']
@@ -87,7 +107,7 @@ class Command(BaseCommand):
                     estado=estados[i],
                     fecha_ingreso=ingreso,
                     fecha_salida=ingreso + timedelta(hours=1) if estados[i] == 'FINALIZADO' else None,
-                    creado_por=admin,
+                    creado_por=admin if i % 2 == 0 else consultor1,
                 )
 
-        self.stdout.write(self.style.SUCCESS('Datos de prueba cargados'))
+        self.stdout.write(self.style.SUCCESS('Grupos, usuarios y datos de prueba cargados'))
