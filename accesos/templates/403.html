@@ -1,0 +1,9 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Acceso denegado{% endblock %}
+
+{% block contenido %}
+    <h2>Acceso denegado (403)</h2>
+    <p>Su usuario no tiene permiso para realizar esta acción.</p>
+    <p><a href="{% url 'inicio' %}">Volver al inicio</a></p>
+{% endblock %}

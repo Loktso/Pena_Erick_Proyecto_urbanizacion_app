@@ -28,8 +28,12 @@
     {% endif %}
 
     <p>
-        <a href="{% url 'visitante_update' visitante.pk %}">Editar</a>
-        <a href="{% url 'visitante_delete' visitante.pk %}">Eliminar</a>
+        {% if perms.accesos.change_visitante %}
+            <a href="{% url 'visitante_update' visitante.pk %}">Editar</a>
+        {% endif %}
+        {% if perms.accesos.delete_visitante %}
+            <a href="{% url 'visitante_delete' visitante.pk %}">Eliminar</a>
+        {% endif %}
         <a href="{% url 'visitante_list' %}">Volver al listado</a>
     </p>
 {% endblock %}

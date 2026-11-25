@@ -1,10 +1,13 @@
 {% extends 'accesos/base.html' %}
+{% load permisos_tags %}
 
 {% block titulo %}Registros de acceso{% endblock %}
 
 {% block contenido %}
     <h2>Registros de acceso</h2>
-    <p><a href="{% url 'registro_create' %}">Nuevo registro de acceso</a></p>
+    {% if perms.accesos.add_registroacceso %}
+        <p><a href="{% url 'registro_create' %}">Nuevo registro de acceso</a></p>
+    {% endif %}
 
     {% if registros %}
         <table border="1" cellpadding="6">
@@ -32,8 +35,12 @@
                         <td>{{ registro.creado_por.username }}</td>
                         <td>
                             <a href="{{ registro.get_absolute_url }}">Ver</a>
-                            <a href="{% url 'registro_update' registro.pk %}">Editar</a>
-                            <a href="{% url 'registro_delete' registro.pk %}">Eliminar</a>
+                            {% if perms.accesos.change_registroacceso and registro|puede_modificar:user %}
+                                <a href="{% url 'registro_update' registro.pk %}">Editar</a>
+                            {% endif %}
+                            {% if perms.accesos.delete_registroacceso and registro|puede_modificar:user %}
+                                <a href="{% url 'registro_delete' registro.pk %}">Eliminar</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
