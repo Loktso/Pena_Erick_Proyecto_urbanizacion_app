@@ -13,3 +13,5 @@ from accesos.views.registro_acceso_views import (
     registro_delete,
 )
 from accesos.views.auth_views import registrarse, iniciar_sesion, cerrar_sesion
+from accesos.views.vivienda_views import vivienda_list, vivienda_detail
+from accesos.views.residente_views import residente_list, residente_detail
