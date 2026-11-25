@@ -1,0 +1,39 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Visitantes{% endblock %}
+
+{% block contenido %}
+    <h2>Visitantes</h2>
+    <p><a href="{% url 'visitante_create' %}">Nuevo visitante</a></p>
+
+    {% if visitantes %}
+        <table border="1" cellpadding="6">
+            <thead>
+                <tr>
+                    <th>Apellidos</th>
+                    <th>Nombres</th>
+                    <th>Cédula</th>
+                    <th>Placa</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visitante in visitantes %}
+                    <tr>
+                        <td>{{ visitante.apellidos }}</td>
+                        <td>{{ visitante.nombres }}</td>
+                        <td>{{ visitante.cedula }}</td>
+                        <td>{{ visitante.placa|default:"-" }}</td>
+                        <td>
+                            <a href="{{ visitante.get_absolute_url }}">Ver</a>
+                            <a href="{% url 'visitante_update' visitante.pk %}">Editar</a>
+                            <a href="{% url 'visitante_delete' visitante.pk %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay visitantes registrados.</p>
+    {% endif %}
+{% endblock %}

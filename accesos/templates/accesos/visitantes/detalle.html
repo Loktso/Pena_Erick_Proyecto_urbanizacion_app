@@ -1,0 +1,34 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}{{ visitante }}{% endblock %}
+
+{% block contenido %}
+    <h2>{{ visitante }}</h2>
+
+    <ul>
+        <li><strong>Cédula:</strong> {{ visitante.cedula }}</li>
+        <li><strong>Placa:</strong> {{ visitante.placa|default:"Sin vehículo" }}</li>
+        <li><strong>Registrado por:</strong> {{ visitante.creado_por.username }}</li>
+    </ul>
+
+    <h3>Accesos de este visitante</h3>
+    {% if visitante.accesos.all %}
+        <ul>
+            {% for acceso in visitante.accesos.all %}
+                <li>
+                    {{ acceso.vivienda }} - {{ acceso.get_motivo_display }} -
+                    {{ acceso.get_estado_display }} -
+                    {{ acceso.fecha_ingreso|date:"d/m/Y H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Este visitante no tiene accesos registrados.</p>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'visitante_update' visitante.pk %}">Editar</a>
+        <a href="{% url 'visitante_delete' visitante.pk %}">Eliminar</a>
+        <a href="{% url 'visitante_list' %}">Volver al listado</a>
+    </p>
+{% endblock %}

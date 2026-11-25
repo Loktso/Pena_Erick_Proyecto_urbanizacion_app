@@ -1,0 +1,14 @@
+{% extends 'accesos/base.html' %}
+
+{% block titulo %}Eliminar visitante{% endblock %}
+
+{% block contenido %}
+    <h2>Eliminar visitante</h2>
+    <p>¿Seguro que desea eliminar a <strong>{{ visitante }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Sí, eliminar</button>
+        <a href="{% url 'visitante_detail' visitante.pk %}">Cancelar</a>
+    </form>
+{% endblock %}

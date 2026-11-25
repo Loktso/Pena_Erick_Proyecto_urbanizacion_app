@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block titulo %}Control de acceso{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Control de acceso a la urbanización</h1>
+        <nav>
+            <a href="{% url 'visitante_list' %}">Visitantes</a>
+        </nav>
+        <hr>
+    </header>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li><strong>{{ message }}</strong></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <main>
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>
